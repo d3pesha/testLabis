@@ -9,12 +9,11 @@ import (
 	"strconv"
 )
 
-// ClientService struct represents a service for handling clients.
+// @tags clients
 type ClientService struct {
 	db *sqlx.DB
 }
 
-// NewClientService creates a new instance of ClientService.
 func NewClientService(db *sqlx.DB) *ClientService {
 	return &ClientService{db: db}
 }
@@ -24,6 +23,7 @@ func NewClientService(db *sqlx.DB) *ClientService {
 // @Produce json
 // @Success 200 {array} models.Client
 // @Router /clients [get]
+// @tags clients
 func (cs *ClientService) GetClients(ctx *gin.Context) {
 	var clients []models.Client
 
@@ -52,6 +52,7 @@ func (cs *ClientService) GetClients(ctx *gin.Context) {
 // @Success 200 {object} models.Client
 // @Failure 400 {object} models.ErrorResponse
 // @Router /clients/{id} [get]
+// @tags clients
 func (cs *ClientService) GetClientByID(ctx *gin.Context) {
 	var client models.Client
 
@@ -87,6 +88,7 @@ func (cs *ClientService) GetClientByID(ctx *gin.Context) {
 // @Success 201 {object} models.Client
 // @Failure 400 {object} models.ErrorResponse
 // @Router /clients [post]
+// @tags clients
 func (cs *ClientService) CreateClient(ctx *gin.Context) {
 	var client models.Client
 	if err := ctx.ShouldBindJSON(&client); err != nil {
@@ -122,6 +124,7 @@ func (cs *ClientService) CreateClient(ctx *gin.Context) {
 // @Success 204
 // @Failure 400 {object} models.ErrorResponse
 // @Router /clients/{id} [delete]
+// @tags clients
 func (cs *ClientService) DeleteClient(ctx *gin.Context) {
 	id := ctx.Param("id")
 	clientID, err := strconv.Atoi(id)
@@ -160,6 +163,7 @@ func (cs *ClientService) DeleteClient(ctx *gin.Context) {
 // @Success 200 {object} models.Client
 // @Failure 400 {object} models.ErrorResponse
 // @Router /clients/{id} [PUT]
+// @tags clients
 func (cs *ClientService) UpdateClient(ctx *gin.Context) {
 	id := ctx.Param("id")
 	clientID, err := strconv.Atoi(id)

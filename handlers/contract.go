@@ -13,6 +13,7 @@ import (
 
 var contractCounter = 1
 
+// @tags Contracts
 type ContractService struct {
 	db *sqlx.DB
 }
@@ -46,6 +47,7 @@ func generateContractNumber(db *sqlx.DB) (string, error) {
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /contracts/{id} [get]
+// @tags contracts
 func (os *ContractService) GetContract(ctx *gin.Context) {
 	var contract models.Contract
 
@@ -64,30 +66,9 @@ func (os *ContractService) GetContract(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, contract)
 }
 
-// @Summary Create a new contract
-// @Description Create a new contract
-// @Accept json
-// @Produce json
-// @Param id_object path int true "Object ID"
-// @Success 201 {object} models.Contract
-// @Failure 400 {object} models.ErrorResponse
-// @Failure 500 {object} models.ErrorResponse
-// @Router /contracts [post]
 func (os *ContractService) CreateContractMethod(ctx *gin.Context, objectID int) {
 	var contract models.Contract
 
-	//var object models.Object
-
-	/*err := os.db.Get(&object, "SELECT * FROM objects WHERE id = $1", objectID) //id
-	if err != nil {
-		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Object not found"})
-			return
-		} else {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-	}*/
 	currentDateTime := time.Now()
 
 	contractNumber, err := generateContractNumber(os.db)
@@ -95,36 +76,38 @@ func (os *ContractService) CreateContractMethod(ctx *gin.Context, objectID int) 
 		return
 	}
 
+	_, err = os.db.Exec("UPDATE contracts SET status = false WHERE id_object = $1", contract.ObjectID)
+	_, err = os.db.Exec("UPDATE objects SET is_visible = false WHERE id = $1", contract.ObjectID)
+
 	err = os.db.QueryRowx("INSERT INTO contracts (id_object, data, number, status) VALUES ($1, $2, $3, $4) RETURNING id, id_object, data, number, status",
 		objectID, currentDateTime, contractNumber, true).Scan(&contract.ID, &contract.ObjectID, &contract.Data, &contract.Number, &contract.Status)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	/*var count int
 
-	_, err = os.db.Exec("UPDATE contracts SET status = false WHERE id_object = $1", contract.ObjectID)
-	_, err = os.db.Exec("UPDATE objects SET is_visible = false WHERE id = $1", contract.ObjectID)
+	err = os.db.Get(&count, "SELECT COUNT(*) FROM objects WHERE id = $1", objectID)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	/*var hasActiveContract bool
 
-	err = os.db.Get(&hasActiveContract, "SELECT EXISTS(SELECT 1 FROM contracts WHERE id_object = $1 AND status = true)", object.ID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
 
-	if !hasActiveContract {
-		_, err = os.db.Exec("UPDATE contracts SET status = true WHERE id_object = $1 AND status = false",
-			object.ID)
+	if count > 1 {
+		_, err = os.db.Exec("UPDATE contracts SET status = false WHERE id_object = $1", contract.ObjectID)
+
 		if err != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-	}*/
+
+		_, err = os.db.Exec("UPDATE objects SET is_visible = false WHERE id = $1", contract.ObjectID)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}*/
 
 	ctx.JSON(http.StatusCreated, contract)
 
@@ -139,6 +122,7 @@ func (os *ContractService) CreateContractMethod(ctx *gin.Context, objectID int) 
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /contracts [post]
+// @tags contracts
 func (os *ContractService) CreateContract(ctx *gin.Context) {
 	var contract models.Contract
 	if err := ctx.ShouldBindJSON(&contract); err != nil {
@@ -167,7 +151,7 @@ func (os *ContractService) CreateContract(ctx *gin.Context) {
 	}
 
 	_, err = os.db.Exec("UPDATE contracts SET status = false WHERE id_object = $1", contract.ObjectID)
-	_, err = os.db.Exec("UPDATE objects SET is_visible = false WHERE id = $1", contract.ObjectID)
+	//_, err = os.db.Exec("UPDATE objects SET is_visible = false WHERE id = $1", contract.ObjectID)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -179,6 +163,22 @@ func (os *ContractService) CreateContract(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	var statusObject bool
+
+	err = os.db.Get(&statusObject, "SELECT is_visible FROM objects WHERE id = $1", contract.ObjectID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if statusObject != true {
+		_, err = os.db.Exec("UPDATE objects SET is_visible = true WHERE id = $1", contract.ObjectID)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	ctx.JSON(http.StatusCreated, contract)
@@ -193,6 +193,7 @@ func (os *ContractService) CreateContract(ctx *gin.Context) {
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /contracts/{id} [delete]
+// @tags contracts
 func (os *ContractService) DeleteContract(ctx *gin.Context) {
 	id := ctx.Param("id")
 	contractID, err := strconv.Atoi(id)
@@ -219,6 +220,7 @@ func (os *ContractService) DeleteContract(ctx *gin.Context) {
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /contracts/{id} [PUT]
+// @tags contracts
 func (os *ContractService) UpdateContract(ctx *gin.Context) {
 	id := ctx.Param("id")
 	contractID, err := strconv.Atoi(id)
@@ -233,8 +235,8 @@ func (os *ContractService) UpdateContract(ctx *gin.Context) {
 		return
 	}
 
-	err = os.db.QueryRowx("UPDATE contracts SET status = $1, id_object = $2 WHERE id = $3	RETURNING id, id_object, data, number, status",
-		updatedContract.Status, updatedContract.ObjectID, contractID).StructScan(&updatedContract)
+	err = os.db.QueryRowx("UPDATE contracts SET status = $1 WHERE id = $2	RETURNING id, id_object, data, number, status",
+		updatedContract.Status, contractID).StructScan(&updatedContract)
 
 	ctx.JSON(http.StatusOK, updatedContract)
 }

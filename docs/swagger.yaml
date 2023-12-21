@@ -68,6 +68,8 @@ paths:
               $ref: '#/definitions/models.Client'
             type: array
       summary: Get all clients
+      tags:
+      - clients
     post:
       consumes:
       - application/json
@@ -91,6 +93,8 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new client
+      tags:
+      - clients
   /clients/{id}:
     delete:
       description: Delete a client by its ID
@@ -110,6 +114,8 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Delete a client by ID
+      tags:
+      - clients
     get:
       description: Get a client by its ID
       parameters:
@@ -130,6 +136,8 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get a client by ID
+      tags:
+      - clients
     put:
       consumes:
       - application/json
@@ -158,6 +166,8 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update a client by ID
+      tags:
+      - clients
   /contracts:
     post:
       consumes:
@@ -186,6 +196,8 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new contract
+      tags:
+      - contracts
   /contracts/{id}:
     delete:
       description: Delete a contract by its ID
@@ -209,6 +221,8 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Delete a contract by ID
+      tags:
+      - contracts
     get:
       description: Get a contract by its ID
       parameters:
@@ -233,6 +247,8 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get a contract by ID
+      tags:
+      - contracts
     put:
       consumes:
       - application/json
@@ -265,6 +281,8 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update a contract by ID
+      tags:
+      - contracts
   /objects:
     post:
       consumes:
@@ -293,6 +311,8 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new object
+      tags:
+      - objects
   /objects/{id}:
     delete:
       description: Delete an object by its ID
@@ -316,6 +336,8 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Delete an object by ID
+      tags:
+      - objects
     get:
       description: Get a list of objects by object ID
       parameters:
@@ -342,6 +364,8 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Get objects by object ID
+      tags:
+      - objects
     put:
       consumes:
       - application/json
@@ -374,4 +398,6 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update an object by ID
+      tags:
+      - objects
 swagger: "2.0"

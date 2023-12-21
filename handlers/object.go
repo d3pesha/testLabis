@@ -9,6 +9,7 @@ import (
 	"strconv"
 )
 
+// @tags Objects
 type ObjectService struct {
 	db *sqlx.DB
 }
@@ -25,6 +26,7 @@ func NewObjectService(db *sqlx.DB) *ObjectService {
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /objects/{id} [get]
+// @tags objects
 func (os *ObjectService) GetObjects(ctx *gin.Context) {
 	var objects []models.Object
 
@@ -62,6 +64,7 @@ func (os *ObjectService) GetObjects(ctx *gin.Context) {
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /objects [post]
+// @tags objects
 func (os *ObjectService) CreateObjects(ctx *gin.Context) {
 	var object models.Object
 	if err := ctx.ShouldBindJSON(&object); err != nil {
@@ -102,6 +105,7 @@ func (os *ObjectService) CreateObjects(ctx *gin.Context) {
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /objects/{id} [delete]
+// @tags objects
 func (os *ObjectService) DeleteObjects(ctx *gin.Context) {
 	id := ctx.Param("id")
 	objectID, err := strconv.Atoi(id)
@@ -140,6 +144,7 @@ func (os *ObjectService) DeleteObjects(ctx *gin.Context) {
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
 // @Router /objects/{id} [PUT]
+// @tags objects
 func (os *ObjectService) UpdateObject(ctx *gin.Context) {
 	id := ctx.Param("id")
 	objectID, err := strconv.Atoi(id)

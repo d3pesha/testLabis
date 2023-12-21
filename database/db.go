@@ -21,7 +21,7 @@ type Postgres struct {
 }
 
 func NewPostgresConfig() *ConfigDB {
-	err := godotenv.Load("C:\\Users\\Reflex1on\\GolandProjects\\testLabis\\.env")
+	err := godotenv.Load(".env") //"C:\\Users\\Reflex1on\\GolandProjects\\testLabis\\testLabis\\.env")
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
 	}

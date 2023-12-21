@@ -45,6 +45,7 @@ func main() {
 		api.POST("/contracts", contractService.CreateContract)
 		api.DELETE("/contracts/:id", contractService.DeleteContract)
 		api.PUT("/contracts/:id", contractService.UpdateContract)
+
 	}
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

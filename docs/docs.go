@@ -21,6 +21,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "clients"
+                ],
                 "summary": "Get all clients",
                 "responses": {
                     "200": {
@@ -41,6 +44,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "clients"
                 ],
                 "summary": "Create a new client",
                 "parameters": [
@@ -76,6 +82,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "clients"
+                ],
                 "summary": "Get a client by ID",
                 "parameters": [
                     {
@@ -108,6 +117,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "clients"
                 ],
                 "summary": "Update a client by ID",
                 "parameters": [
@@ -148,6 +160,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "clients"
+                ],
                 "summary": "Delete a client by ID",
                 "parameters": [
                     {
@@ -179,6 +194,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "contracts"
                 ],
                 "summary": "Create a new contract",
                 "parameters": [
@@ -220,6 +238,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "contracts"
+                ],
                 "summary": "Get a contract by ID",
                 "parameters": [
                     {
@@ -258,6 +279,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "contracts"
                 ],
                 "summary": "Update a contract by ID",
                 "parameters": [
@@ -304,6 +328,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "contracts"
+                ],
                 "summary": "Delete a contract by ID",
                 "parameters": [
                     {
@@ -341,6 +368,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "objects"
                 ],
                 "summary": "Create a new object",
                 "parameters": [
@@ -381,6 +411,9 @@ const docTemplate = `{
                 "description": "Get a list of objects by object ID",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "objects"
                 ],
                 "summary": "Get objects by object ID",
                 "parameters": [
@@ -423,6 +456,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "objects"
                 ],
                 "summary": "Update an object by ID",
                 "parameters": [
@@ -468,6 +504,9 @@ const docTemplate = `{
                 "description": "Delete an object by its ID",
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "objects"
                 ],
                 "summary": "Delete an object by ID",
                 "parameters": [
