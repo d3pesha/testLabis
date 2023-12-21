@@ -1,11 +1,12 @@
 FROM golang
-WORKDIR /labis
 
-COPY go.mod go.sum ./
-RUN go mod download
+RUN mkdir /app
 
-COPY . .
-RUN go build -o main .
+ADD . /app
+
+WORKDIR /app
+
+RUN go build -o main ./main.go
 
 EXPOSE 8080
-CMD ["./main"]
+CMD [ "/app/main" ]

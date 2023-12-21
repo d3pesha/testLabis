@@ -39,6 +39,16 @@ func (cs *ClientService) GetClients(ctx *gin.Context) {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
+
+		for j := range objects {
+			var contracts []models.Contract
+			err = cs.db.Select(&contracts, "SELECT * FROM contracts WHERE id_object = $1", objects[j].ID)
+			if err != nil {
+				ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+				return
+			}
+			objects[j].Contracts = contracts
+		}
 		clients[i].Objects = objects
 	}
 
@@ -74,6 +84,16 @@ func (cs *ClientService) GetClientByID(ctx *gin.Context) {
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	for j := range objects {
+		var contracts []models.Contract
+		err = cs.db.Select(&contracts, "SELECT * FROM contracts WHERE id_object = $1", objects[j].ID)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		objects[j].Contracts = contracts
 	}
 	client.Objects = objects
 
