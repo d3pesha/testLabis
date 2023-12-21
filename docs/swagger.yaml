@@ -1,0 +1,377 @@
+basePath: /api/v1
+definitions:
+  models.Client:
+    properties:
+      email:
+        type: string
+      fio:
+        type: string
+      id:
+        type: integer
+      objects:
+        items:
+          $ref: '#/definitions/models.Object'
+        type: array
+      password:
+        type: string
+    type: object
+  models.Contract:
+    properties:
+      data:
+        type: string
+      id:
+        type: integer
+      number:
+        type: string
+      object_id:
+        type: integer
+      status:
+        type: boolean
+    type: object
+  models.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.Object:
+    properties:
+      address:
+        type: string
+      contracts:
+        items:
+          $ref: '#/definitions/models.Contract'
+        type: array
+      id:
+        type: integer
+      id_user:
+        type: integer
+      is_visible:
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for managing clients, objects, and contracts.
+  title: Medium API
+  version: "1.0"
+paths:
+  /clients:
+    get:
+      description: Get a list of all clients
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Client'
+            type: array
+      summary: Get all clients
+    post:
+      consumes:
+      - application/json
+      description: Create a new client
+      parameters:
+      - description: Client information
+        in: body
+        name: client
+        required: true
+        schema:
+          $ref: '#/definitions/models.Client'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Client'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new client
+  /clients/{id}:
+    delete:
+      description: Delete a client by its ID
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a client by ID
+    get:
+      description: Get a client by its ID
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Client'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get a client by ID
+    put:
+      consumes:
+      - application/json
+      description: Update a client by its ID
+      parameters:
+      - description: Client ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated client information
+        in: body
+        name: client
+        required: true
+        schema:
+          $ref: '#/definitions/models.Client'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Client'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a client by ID
+  /contracts:
+    post:
+      consumes:
+      - application/json
+      description: Create a new contract
+      parameters:
+      - description: Contract information
+        in: body
+        name: contract
+        required: true
+        schema:
+          $ref: '#/definitions/models.Contract'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Contract'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new contract
+  /contracts/{id}:
+    delete:
+      description: Delete a contract by its ID
+      parameters:
+      - description: Contract ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a contract by ID
+    get:
+      description: Get a contract by its ID
+      parameters:
+      - description: Contract ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Contract'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get a contract by ID
+    put:
+      consumes:
+      - application/json
+      description: Update a contract by its ID
+      parameters:
+      - description: Contract ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated contract information
+        in: body
+        name: contract
+        required: true
+        schema:
+          $ref: '#/definitions/models.Contract'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Contract'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update a contract by ID
+  /objects:
+    post:
+      consumes:
+      - application/json
+      description: Create a new object
+      parameters:
+      - description: Object information
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.Object'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Object'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Create a new object
+  /objects/{id}:
+    delete:
+      description: Delete an object by its ID
+      parameters:
+      - description: Object ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete an object by ID
+    get:
+      description: Get a list of objects by object ID
+      parameters:
+      - description: object ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Object'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get objects by object ID
+    put:
+      consumes:
+      - application/json
+      description: Update an object by its ID
+      parameters:
+      - description: Object ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated object information
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/models.Object'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Object'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update an object by ID
+swagger: "2.0"
