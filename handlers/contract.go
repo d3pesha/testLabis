@@ -158,7 +158,7 @@ func (os *ContractService) CreateContract(ctx *gin.Context) {
 		return
 	}
 
-	err = os.db.QueryRowx("INSERT INTO contracts (id_object, data, number, status) VALUES ($1, $2, $3, $4) RETURNING id, id_object, data, number, status",
+	err = os.db.QueryRowx("INSERT INTO contracts (id_object, 	data, number, status) VALUES ($1, $2, $3, $4) RETURNING id, id_object, data, number, status",
 		contract.ObjectID, currentDateTime, contractNumber, true).Scan(&contract.ID, &contract.ObjectID, &contract.Data, &contract.Number, &contract.Status)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

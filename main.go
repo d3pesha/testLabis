@@ -11,13 +11,13 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title Medium API
 // @version 1.0
 // @description API for managing clients, objects, and contracts.
 
 // @host localhost:8080
 // @BasePath /api/v1
 
+// @title Medium API
 func main() {
 	router := gin.Default()
 

@@ -27,29 +27,21 @@ func NewClientService(db *sqlx.DB) *ClientService {
 func (cs *ClientService) GetClients(ctx *gin.Context) {
 	var clients []models.Client
 
-	err := cs.db.Select(&clients, "SELECT * FROM users")
+	err := cs.db.Select(&clients, `SELECT us.fio, 
+	us.email, 
+	us.password, 
+	obj.address, 
+	obj.is_visible,
+	ct.data,
+	ct.number,
+	ct.status
+	FROM users us
+	INNER JOIN objects obj ON obj.id_user = us.id
+	INNER JOIN contracts ct ON ct.id_object = obj.id
+;`)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
-	}
-	for i := range clients {
-		var objects []models.Object
-		err = cs.db.Select(&objects, "SELECT * FROM objects WHERE id_user = $1", clients[i].ID)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-
-		for j := range objects {
-			var contracts []models.Contract
-			err = cs.db.Select(&contracts, "SELECT * FROM contracts WHERE id_object = $1", objects[j].ID)
-			if err != nil {
-				ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-				return
-			}
-			objects[j].Contracts = contracts
-		}
-		clients[i].Objects = objects
 	}
 
 	ctx.JSON(http.StatusOK, clients)
@@ -73,29 +65,23 @@ func (cs *ClientService) GetClientByID(ctx *gin.Context) {
 		return
 	}
 
-	err = cs.db.Get(&client, "SELECT * FROM users WHERE id = $1", clientID)
+	err = cs.db.Get(&client, `SELECT 
+    	us.fio,
+		us.email,
+		obj.address,
+		obj.is_visible,
+		ct.data,
+		ct.number,
+		ct.status
+	FROM users us
+	INNER JOIN objects obj ON obj.id_user = us.id
+	INNER JOIN contracts ct ON ct.id_object = obj.id
+	WHERE us.id = $1
+	;`, clientID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	var objects []models.Object
-	err = cs.db.Select(&objects, "SELECT * FROM objects WHERE id_user = $1", clientID)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	for j := range objects {
-		var contracts []models.Contract
-		err = cs.db.Select(&contracts, "SELECT * FROM contracts WHERE id_object = $1", objects[j].ID)
-		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		objects[j].Contracts = contracts
-	}
-	client.Objects = objects
 
 	ctx.JSON(http.StatusOK, client)
 }
