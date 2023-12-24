@@ -47,10 +47,10 @@ func (os *ObjectService) GetObjects(ctx *gin.Context) {
 		INNER JOIN contracts ct ON ct.id_object = obj.id
 		WHERE obj.id = $1
 	;`, objectID)
-		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid client ID"})
-			return
-		}*/
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}*/
 
 	err = os.db.Select(&objects, "SELECT * FROM objects WHERE id = $1", objectID)
 	if err != nil {
@@ -67,6 +67,7 @@ func (os *ObjectService) GetObjects(ctx *gin.Context) {
 
 		objects[i].Contracts = contracts
 	}
+
 	ctx.JSON(http.StatusOK, objects)
 
 }
@@ -101,14 +102,15 @@ func (os *ObjectService) CreateObjects(ctx *gin.Context) {
 	}
 
 	err = os.db.QueryRowx("INSERT INTO objects (id_user, address, is_visible) VALUES ($1, $2, $3) RETURNING id, id_user, address, is_visible",
-		object.UserID, object.Address, object.IsVisible).Scan(&object.ID, &object.UserID, &object.Address, &object.IsVisible)
+		object.UserID, object.Address, true).Scan(&object.ID, &object.UserID, &object.Address, &object.IsVisible)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	cs := NewContractService(os.db)
-	cs.CreateContractMethod(ctx, object.ID)
+	contract := cs.CreateContractMethod(ctx, object.ID)
+	object.Contracts = append(object.Contracts, contract)
 
 	ctx.JSON(http.StatusCreated, object)
 }
