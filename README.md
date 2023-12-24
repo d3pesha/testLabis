@@ -89,7 +89,6 @@ migrate -database "postgres://postgres:postgres@localhost:5432/labis?sslmode=dis
   {
     "id_user": 0,
     "address": "string",
-    "is_visible": true
   }
   ```
 
