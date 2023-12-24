@@ -20,9 +20,14 @@
 
    Обновите значения в соответствии с конфигурацией вашей базы данных.
 
-3. Создайте базу данных используя файл db.txt из папки database.
+3. Создайте базу данных с названием labis.
 
-4. Соберите Docker-образ:
+4. Создайте таблицы с помощью миграции:
+```bash
+migrate -database "postgres://postgres:postgres@localhost:5432/labis?sslmode=disable" -path "./database/schema" up  
+```
+
+4. Соберите Docker-образ через командную строку:
 
    ```bash
    docker build -t labis .
