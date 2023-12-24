@@ -111,13 +111,6 @@ func (cs *ClientService) GetClientByID(ctx *gin.Context) {
 	client.Objects = objects
 
 	ctx.JSON(http.StatusOK, client)
-
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, client)
 }
 
 // @Summary Create a new client
@@ -173,14 +166,14 @@ func (cs *ClientService) DeleteClient(ctx *gin.Context) {
 		return
 	}
 
-	var objectCount int
-	err = cs.db.Get(&objectCount, "SELECT COUNT(*) FROM objects WHERE id_user = $1", clientID)
+	var objectStatus bool
+	err = cs.db.Get(&objectStatus, "SELECT is_visible FROM objects WHERE id_user = $1", clientID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	if objectCount > 0 {
+	if objectStatus == true {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "can't delete client with objects"})
 		return
 	}
