@@ -85,7 +85,7 @@ func (cs *ClientService) GetClientByID(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid client ID"})
 		return
 	}
-
+   	
 	err = cs.db.Get(&client, "SELECT * FROM users WHERE id = $1", clientID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -165,7 +165,19 @@ func (cs *ClientService) DeleteClient(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid client ID"})
 		return
 	}
-
+	var countObjects int
+	err := cs.db.Get(&countObjects, "SELECT COUNT(*) FROM objects WHERE id_user = $1", clientID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if countObjects == 0 {
+		_, err = cs.db.Exec("DELETE FROM users WHERE id = $1", clientID)
+		if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+	}
+	
 	var objectStatus bool
 	err = cs.db.Get(&objectStatus, "SELECT is_visible FROM objects WHERE id_user = $1", clientID)
 	if err != nil {
