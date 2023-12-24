@@ -9,6 +9,9 @@ import (
 	_ "github.com/lib/pq"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/github"
 )
 
 // @version 1.0

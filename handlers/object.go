@@ -37,26 +37,38 @@ func (os *ObjectService) GetObjects(ctx *gin.Context) {
 		return
 	}
 
+	/*err = os.db.Select(&objects, `SELECT
+		obj.address,
+		obj.is_visible,
+		ct.data,
+		ct.number,
+		ct.status
+		FROM objects obj
+		INNER JOIN contracts ct ON ct.id_object = obj.id
+		WHERE obj.id = $1
+	;`, objectID)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid client ID"})
+			return
+		}*/
+
+	err = os.db.Select(&objects, "SELECT * FROM objects WHERE id = $1", objectID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	err = os.db.Select(&objects, `SELECT 
-	obj.address, 
-	obj.is_visible,
-	ct.data,
-	ct.number,
-	ct.status
-	FROM objects obj
-	INNER JOIN contracts ct ON ct.id_object = obj.id
-	WHERE obj.id = $1
-;`, objectID)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid client ID"})
-		return
-	}
+	for i := range objects {
+		var contracts []models.Contract
+		err = os.db.Select(&contracts, "SELECT * FROM contracts WHERE id_object = $1", objects[i].ID)
+		if err != nil {
+			ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 
+		objects[i].Contracts = contracts
+	}
 	ctx.JSON(http.StatusOK, objects)
+
 }
 
 // @Summary Create a new object
